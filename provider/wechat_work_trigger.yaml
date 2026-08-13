@@ -5,8 +5,8 @@ identity:
     en_US: WeCom AI Bot
     zh_Hans: 企业微信智能机器人
   description:
-    en_US: Receive encrypted WeCom AI bot callbacks.
-    zh_Hans: 接收企业微信智能机器人的加密回调。
+    en_US: Receive encrypted WeCom AI bot callbacks through the URL callback (short-connection/Webhook) mode. Long-connection mode is not supported.
+    zh_Hans: 通过 URL 回调（短连接/Webhook）模式接收企业微信智能机器人的加密回调；暂不支持长连接模式。
   icon: icon.svg
 
 subscription_schema:
@@ -35,8 +35,8 @@ subscription_schema:
       en_US: AI Bot ID
       zh_Hans: 智能机器人 ID
     help:
-      en_US: The BotID (aibotid) of the WeCom AI bot. Find it in the bot's API mode callback configuration. See the WeCom documentation.
-      zh_Hans: 企业微信智能机器人的 BotID（aibotid），可在该机器人的 API 模式回调配置中获取。详见企业微信文档。
+      en_US: The BotID (aibotid) of the WeCom AI bot. Use the BotID from the API mode configured with "Set message receiving URL". Do not use a long-connection Secret here. See the WeCom documentation.
+      zh_Hans: 企业微信智能机器人的 BotID（aibotid）。请使用 API 模式中“设置接收消息 URL”配置对应的 BotID，不要填写长连接模式的 Secret。详见企业微信文档。
     url: https://developer.work.weixin.qq.com/document/path/101463
   - name: token
     type: secret-input
@@ -45,8 +45,8 @@ subscription_schema:
       en_US: Callback Token
       zh_Hans: 回调 Token
     help:
-      en_US: The Token configured for the WeCom bot's callback URL. It is used to verify callback signatures. This is not the Secret used by long-connection mode.
-      zh_Hans: 企业微信智能机器人回调 URL 中配置的 Token，用于校验回调签名；不是长连接模式使用的 Secret。
+      en_US: The Token configured in the API mode "Set message receiving URL" configuration. It verifies URL callback signatures. This is not the Secret used by long-connection mode.
+      zh_Hans: API 模式“设置接收消息 URL”中配置的 Token，用于校验 URL 回调签名；不是长连接模式使用的 Secret。
     url: https://developer.work.weixin.qq.com/document/path/101463
   - name: encoding_aes_key
     type: secret-input
@@ -55,8 +55,8 @@ subscription_schema:
       en_US: Encoding AES Key
       zh_Hans: EncodingAESKey
     help:
-      en_US: The 43-character EncodingAESKey configured for the WeCom bot's callback URL. It is used to decrypt callback payloads. This is not a media aeskey from long-connection callbacks.
-      zh_Hans: 企业微信智能机器人回调 URL 中配置的 43 位 EncodingAESKey，用于解密回调内容；不是长连接回调中的媒体 aeskey。
+      en_US: The 43-character EncodingAESKey configured in the API mode "Set message receiving URL" configuration. It decrypts URL callback payloads. Long-connection mode does not use this field.
+      zh_Hans: API 模式“设置接收消息 URL”中配置的 43 位 EncodingAESKey，用于解密 URL 回调内容；长连接模式不使用此字段。
     url: https://developer.work.weixin.qq.com/document/path/101463
 
 subscription_constructor:

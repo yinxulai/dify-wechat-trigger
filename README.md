@@ -1,7 +1,8 @@
 # WeCom AI Bot Trigger
 
-This Dify trigger receives encrypted callbacks from WeCom AI bots and dispatches
-incoming messages to a workflow.
+This Dify trigger receives encrypted URL callbacks (short-connection/Webhook)
+from WeCom AI bots and dispatches incoming messages to a workflow. It does not
+support the WeCom long-connection mode.
 
 ## Configuration
 
@@ -12,8 +13,10 @@ value in every field describes the first robot, the second value describes the
 second robot, and so on.
 
 Create a subscription, select one robot, and copy the generated callback URL to
-that robot's HTTPS callback configuration in WeCom. This first version uses
-manual callback configuration and does not create an outbound webhook.
+that robot's HTTPS URL callback configuration in WeCom. Choose API mode with
+"Set message receiving URL" rather than long-connection mode. This first
+version uses manual callback configuration and does not create an outbound
+webhook.
 
 The callback validates the signature, decrypts the request, checks `aibotid`,
 and exposes the decrypted message as the `message_received` event payload.
