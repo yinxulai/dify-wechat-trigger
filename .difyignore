@@ -1,5 +1,7 @@
 .git/
 .github/
+.DS_Store
+.env
 .venv/
 .pytest_cache/
 **/__pycache__/
