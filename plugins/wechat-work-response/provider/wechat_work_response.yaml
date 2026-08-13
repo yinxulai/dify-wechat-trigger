@@ -1,3 +1,18 @@
-endpoints:
+identity:
+  author: yinxulai
+  name: wechat_work_response
+  label:
+    en_US: WeCom Response
+    zh_Hans: 企业微信响应
+  description:
+    en_US: Send messages and update task status for WeCom AI bots.
+    zh_Hans: 向企业微信 AI Bot 发送消息和更新任务状态。
+  icon: icon.svg
+  tags:
+    - utilities
+tools:
   - provider/wechat_work_reply.yaml
   - provider/wechat_work_status.yaml
+extra:
+  python:
+    source: provider/wechat_work_response_provider.py

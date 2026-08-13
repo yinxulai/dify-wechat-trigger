@@ -1,5 +1,7 @@
 # Dify WeCom Plugins
 
+![Dify WeCom Plugins](/preview/trigger.png)
+
 This repository contains two independent Dify plugins for WeCom AI bots:
 
 - `plugins/wechat-work-trigger`: receives encrypted WeCom callbacks and starts

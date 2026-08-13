@@ -1,5 +1,55 @@
-path: /wechat-work/status
-method: POST
+identity:
+  author: yinxulai
+  name: wechat_work_status
+  label:
+    en_US: Update WeCom Status
+    zh_Hans: 更新企业微信状态
+description:
+  human:
+    en_US: Update the task status through a WeCom AI Bot response URL.
+    zh_Hans: 通过企业微信 AI Bot 的 response URL 更新任务状态。
+  llm: Update the current WeCom AI Bot task status.
+parameters:
+  - name: response_url
+    label:
+      en_US: Response URL
+      zh_Hans: 响应 URL
+    human_description:
+      en_US: The response URL from the WeCom trigger event.
+      zh_Hans: 企业微信触发器事件中的响应 URL。
+    type: string
+    form: form
+    required: true
+  - name: message_id
+    label:
+      en_US: Message ID
+      zh_Hans: 消息 ID
+    human_description:
+      en_US: The message ID from the WeCom trigger event.
+      zh_Hans: 企业微信触发器事件中的消息 ID。
+    type: string
+    form: form
+    required: true
+  - name: content
+    label:
+      en_US: Content
+      zh_Hans: 内容
+    human_description:
+      en_US: Status message to send to WeCom.
+      zh_Hans: 要发送给企业微信的状态消息。
+    type: string
+    form: llm
+    required: true
+  - name: status
+    label:
+      en_US: Status
+      zh_Hans: 状态
+    human_description:
+      en_US: The task status recognized by the WeCom AI Bot.
+      zh_Hans: 企业微信 AI Bot 识别的任务状态。
+    type: string
+    form: form
+    required: true
 extra:
   python:
-    source: provider/wechat_work_response_endpoint.py
+    source: provider/wechat_work_status.py

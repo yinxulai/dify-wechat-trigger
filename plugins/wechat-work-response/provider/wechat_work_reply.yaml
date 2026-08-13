@@ -1,5 +1,45 @@
-path: /wechat-work/reply
-method: POST
+identity:
+  author: yinxulai
+  name: wechat_work_reply
+  label:
+    en_US: Reply to WeCom
+    zh_Hans: 回复企业微信
+description:
+  human:
+    en_US: Send a text message to a WeCom AI Bot response URL.
+    zh_Hans: 通过企业微信 AI Bot 的 response URL 发送文本消息。
+  llm: Send a text reply to the WeCom AI Bot for the current event.
+parameters:
+  - name: response_url
+    label:
+      en_US: Response URL
+      zh_Hans: 响应 URL
+    human_description:
+      en_US: The response URL from the WeCom trigger event.
+      zh_Hans: 企业微信触发器事件中的响应 URL。
+    type: string
+    form: form
+    required: true
+  - name: message_id
+    label:
+      en_US: Message ID
+      zh_Hans: 消息 ID
+    human_description:
+      en_US: The message ID from the WeCom trigger event.
+      zh_Hans: 企业微信触发器事件中的消息 ID。
+    type: string
+    form: form
+    required: true
+  - name: content
+    label:
+      en_US: Content
+      zh_Hans: 内容
+    human_description:
+      en_US: Text to send to WeCom.
+      zh_Hans: 要发送给企业微信的文本内容。
+    type: string
+    form: llm
+    required: true
 extra:
   python:
-    source: provider/wechat_work_response_endpoint.py
+    source: provider/wechat_work_reply.py
