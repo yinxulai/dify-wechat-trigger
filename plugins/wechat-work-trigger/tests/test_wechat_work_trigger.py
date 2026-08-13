@@ -104,6 +104,7 @@ def test_normalizes_message_output_for_workflow() -> None:
             "aibotid": "bot-1",
             "msgid": "message-1",
             "msgtype": "text",
+            "response_url": "https://qyapi.weixin.qq.com/cgi-bin/aibot/respond?key=unique",
             "text": {"content": "hello", "irrelevant_empty": ""},
             "from": {"userid": "user-1", "alias": "Alice", "name": "Alice Name"},
             "chattype": "group",
@@ -121,6 +122,7 @@ def test_normalizes_message_output_for_workflow() -> None:
         "sender": {"id": "user-1", "name": "Alice"},
         "conversation": {"type": "group", "id": "chat-1"},
         "bot_id": "bot-1",
+        "response_url": "https://qyapi.weixin.qq.com/cgi-bin/aibot/respond?key=unique",
     }
 
 

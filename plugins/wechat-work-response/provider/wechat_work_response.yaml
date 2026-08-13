@@ -1,13 +1,3 @@
-settings:
-  - name: response_backend_url
-    type: text-input
-    required: true
-    label:
-      en_US: Response Backend URL
-      zh_Hans: 响应后端 URL
-    help:
-      en_US: URL of the shared WeCom response backend.
-      zh_Hans: 共享企业微信响应后端的 URL。
 endpoints:
   - provider/wechat_work_reply.yaml
   - provider/wechat_work_status.yaml

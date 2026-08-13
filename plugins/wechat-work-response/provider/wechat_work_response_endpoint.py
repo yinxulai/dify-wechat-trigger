@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping
+from urllib.parse import urlparse
 from urllib.error import HTTPError, URLError
 from urllib.request import Request as UrlRequest
 from urllib.request import urlopen
@@ -13,7 +14,7 @@ from dify_plugin.interfaces.endpoint import Endpoint
 
 class WechatWorkResponseEndpoint(Endpoint):
     def _invoke(self, request: Request, values: Mapping, settings: Mapping) -> Response:
-        del values
+        del values, settings
         try:
             payload = request.get_json(silent=False)
         except (TypeError, ValueError):
@@ -28,14 +29,17 @@ class WechatWorkResponseEndpoint(Endpoint):
         if not isinstance(content, str) or not content:
             return _json_response({"error": "content is required"}, 400)
 
-        backend_url = settings.get("response_backend_url")
-        if not isinstance(backend_url, str) or not backend_url.startswith(("https://", "http://")):
-            return _json_response({"error": "response_backend_url is not configured"}, 500)
+        response_url = payload.get("response_url")
+        if not _is_wecom_response_url(response_url):
+            return _json_response(
+                {"error": "response_url must be an HTTPS WeCom API URL"},
+                400,
+            )
 
         forwarded = dict(payload)
         forwarded["message_id"] = message_id.strip()
         try:
-            backend_response = _post_json(backend_url, forwarded)
+            backend_response = _post_json(response_url, forwarded)
         except (HTTPError, URLError, TimeoutError, ValueError) as exc:
             return _json_response({"error": f"response backend request failed: {exc}"}, 502)
         return _json_response(
@@ -67,6 +71,13 @@ def _post_json(url: str, payload: Mapping) -> object:
     if not raw_body:
         return {}
     return json.loads(raw_body)
+
+
+def _is_wecom_response_url(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    parsed = urlparse(value)
+    return parsed.scheme == "https" and parsed.hostname == "qyapi.weixin.qq.com"
 
 
 def _json_response(payload: Mapping, status: int) -> Response:

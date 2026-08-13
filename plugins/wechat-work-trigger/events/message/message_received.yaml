@@ -22,6 +22,9 @@ output_schema:
     bot_id:
       type: string
       description: WeCom AI bot ID from the callback payload.
+    response_url:
+      type: string
+      description: Unique HTTPS response URL for this callback.
     event:
       type: object
       description: Event type and event-specific data when the callback is an event.

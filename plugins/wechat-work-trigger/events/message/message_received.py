@@ -45,6 +45,7 @@ def normalize_callback_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
     _set_value(output, "conversation", conversation)
 
     _set_value(output, "bot_id", payload.get("aibotid"))
+    _set_value(output, "response_url", payload.get("response_url"))
 
     event = payload.get("event")
     if isinstance(event, Mapping):
