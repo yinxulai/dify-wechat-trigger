@@ -44,5 +44,10 @@ to `main`, creates a matching `vMAJOR.MINOR.PATCH` tag, and publishes a GitHub
 Release containing the `.difypkg` file. The `meta.version` field is the manifest
 schema version and remains independent from the plugin release version.
 
+Publishing a GitHub Release from an existing `vMAJOR.MINOR.PATCH` tag also
+triggers the `Package Published Release` workflow. It verifies that the tag
+matches the plugin version, runs the checks, builds the `.difypkg`, and uploads
+it to that Release.
+
 The repository must allow GitHub Actions to write contents, and branch rules for
 `main` must permit the release workflow's version commit.

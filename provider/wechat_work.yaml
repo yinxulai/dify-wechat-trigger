@@ -1,6 +1,6 @@
 identity:
   author: yinxulai
-  name: wechat_work
+  name: wechat_work_trigger
   label:
     en_US: WeCom AI Bot
     zh_Hans: 企业微信智能机器人
@@ -16,30 +16,48 @@ subscription_schema:
     label:
       en_US: Robot ID
       zh_Hans: 机器人 ID
+    help:
+      en_US: A local identifier used to select this robot when creating a subscription. It does not come from WeCom and can be any unique value.
+      zh_Hans: 用于在创建订阅时选择此机器人的本地标识，不是企业微信提供的 ID，可填写任意唯一值。
   - name: robot_name
     type: text-input
     required: true
     label:
       en_US: Robot Name
       zh_Hans: 机器人名称
+    help:
+      en_US: A local display name to help you recognize this robot in Dify. It is not sent to WeCom.
+      zh_Hans: 用于在 Dify 中识别机器人的本地显示名称，不会发送给企业微信。
   - name: aibotid
     type: text-input
     required: true
     label:
       en_US: AI Bot ID
       zh_Hans: 智能机器人 ID
+    help:
+      en_US: The BotID (aibotid) of the WeCom AI bot. Find it in the bot's API mode callback configuration. See the WeCom documentation.
+      zh_Hans: 企业微信智能机器人的 BotID（aibotid），可在该机器人的 API 模式回调配置中获取。详见企业微信文档。
+    url: https://developer.work.weixin.qq.com/document/path/101463
   - name: token
     type: secret-input
     required: true
     label:
       en_US: Callback Token
       zh_Hans: 回调 Token
+    help:
+      en_US: The Token configured for the WeCom bot's callback URL. It is used to verify callback signatures. This is not the Secret used by long-connection mode.
+      zh_Hans: 企业微信智能机器人回调 URL 中配置的 Token，用于校验回调签名；不是长连接模式使用的 Secret。
+    url: https://developer.work.weixin.qq.com/document/path/101463
   - name: encoding_aes_key
     type: secret-input
     required: true
     label:
       en_US: Encoding AES Key
       zh_Hans: EncodingAESKey
+    help:
+      en_US: The 43-character EncodingAESKey configured for the WeCom bot's callback URL. It is used to decrypt callback payloads. This is not a media aeskey from long-connection callbacks.
+      zh_Hans: 企业微信智能机器人回调 URL 中配置的 43 位 EncodingAESKey，用于解密回调内容；不是长连接回调中的媒体 aeskey。
+    url: https://developer.work.weixin.qq.com/document/path/101463
 
 subscription_constructor:
   credentials_schema:
@@ -51,8 +69,8 @@ subscription_constructor:
         en_US: Robot IDs
         zh_Hans: 机器人 ID
       help:
-        en_US: Add one value for each robot. Keep the order the same across all robot fields.
-        zh_Hans: 每个机器人添加一项，所有机器人字段必须保持相同顺序。
+        en_US: Add one unique local identifier for each robot. Keep the order the same across all robot fields. This value is used to populate the Robot selector.
+        zh_Hans: 为每个机器人添加一个唯一的本地标识，所有机器人字段必须保持相同顺序。此值用于生成“机器人”选择项。
     - name: robot_name
       type: text-input
       required: true
@@ -60,6 +78,9 @@ subscription_constructor:
       label:
         en_US: Robot Names
         zh_Hans: 机器人名称
+      help:
+        en_US: Add one local display name for each robot. Keep the order aligned with Robot IDs; names are only shown in Dify.
+        zh_Hans: 为每个机器人添加一个本地显示名称，顺序须与机器人 ID 对齐；名称只用于在 Dify 中展示。
     - name: aibotid
       type: text-input
       required: true
@@ -67,6 +88,10 @@ subscription_constructor:
       label:
         en_US: AI Bot IDs
         zh_Hans: 智能机器人 ID
+      help:
+        en_US: Add the WeCom BotID (aibotid) for each robot. Keep the order aligned with the other fields. See the WeCom documentation.
+        zh_Hans: 添加每个企业微信智能机器人的 BotID（aibotid），顺序须与其他字段对齐。详见企业微信文档。
+      url: https://developer.work.weixin.qq.com/document/path/101463
     - name: token
       type: secret-input
       required: true
@@ -74,6 +99,10 @@ subscription_constructor:
       label:
         en_US: Callback Tokens
         zh_Hans: 回调 Token
+      help:
+        en_US: Add the callback Token configured for each WeCom bot. Keep the order aligned with the other fields. Do not use the long-connection Secret.
+        zh_Hans: 添加每个企业微信机器人的回调 Token，顺序须与其他字段对齐。不要填写长连接模式的 Secret。
+      url: https://developer.work.weixin.qq.com/document/path/101463
     - name: encoding_aes_key
       type: secret-input
       required: true
@@ -81,6 +110,10 @@ subscription_constructor:
       label:
         en_US: Encoding AES Keys
         zh_Hans: EncodingAESKey
+      help:
+        en_US: Add the 43-character EncodingAESKey configured for each WeCom bot callback. Keep the order aligned with the other fields.
+        zh_Hans: 添加每个企业微信机器人回调配置中的 43 位 EncodingAESKey，顺序须与其他字段对齐。
+      url: https://developer.work.weixin.qq.com/document/path/101463
   parameters:
     - name: robot_id
       type: dynamic-select

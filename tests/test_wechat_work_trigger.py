@@ -1,12 +1,14 @@
 import base64
 import json
 import time
+from pathlib import Path
 from unittest.mock import Mock
 
 import pytest
 from werkzeug.test import EnvironBuilder
 from werkzeug.wrappers import Request
 
+from dify_plugin.core.plugin_registration import PluginRegistration
 from dify_plugin.entities.trigger import Subscription
 from dify_plugin.errors.trigger import TriggerDispatchError, TriggerValidationError
 from provider.wechat_work import WechatWorkTrigger
@@ -33,6 +35,14 @@ def _subscription(properties=ROBOT_PROPERTIES) -> Subscription:
 
 def _trigger() -> WechatWorkTrigger:
     return WechatWorkTrigger(runtime=Mock())
+
+
+def test_registers_provider_with_plugin_provider_name() -> None:
+    registration = PluginRegistration(Path.cwd())
+
+    assert [provider.identity.name for provider in registration.triggers_configuration] == [
+        "wechat_work_trigger"
+    ]
 
 
 def _request(
