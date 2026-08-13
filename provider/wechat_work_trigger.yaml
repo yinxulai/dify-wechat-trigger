@@ -2,8 +2,8 @@ identity:
   author: yinxulai
   name: wechat_work_trigger
   label:
-    en_US: Add WeCom AI Bot
-    zh_Hans: 添加企业微信机器人
+    en_US: Add WeCom AI Bot (URL Callback)
+    zh_Hans: 添加企业微信机器人（URL 回调）
   description:
     en_US: Add an existing WeCom AI bot to Dify using URL callback credentials, then receive its encrypted callbacks. This does not create a bot in WeCom. Long-connection mode is not supported.
     zh_Hans: 录入已有企业微信机器人的 URL 回调配置，让 Dify 接收加密消息；不会自动创建企业微信机器人，暂不支持长连接模式。
