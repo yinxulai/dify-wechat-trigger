@@ -23,6 +23,8 @@ and exposes the decrypted message as the `message_received` event payload.
 Run the local checks with Python 3.12:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
 python -m pip install -e '.[dev]'
 python scripts/version.py check
 python -m compileall -q provider events main.py
@@ -36,10 +38,11 @@ Pull requests and pushes to `main` run the same checks and build a downloadable
 
 Run the `Release` workflow manually from GitHub Actions and provide a version in
 `MAJOR.MINOR.PATCH` format. The workflow requires a version greater than the
-current one, updates `pyproject.toml` and both versions in `manifest.yaml`, runs
-all checks, packages the plugin, commits the version change to `main`, creates a
-matching `vMAJOR.MINOR.PATCH` tag, and publishes a GitHub Release containing the
-`.difypkg` file.
+current one, updates `pyproject.toml` and the top-level plugin version in
+`manifest.yaml`, runs all checks, packages the plugin, commits the version change
+to `main`, creates a matching `vMAJOR.MINOR.PATCH` tag, and publishes a GitHub
+Release containing the `.difypkg` file. The `meta.version` field is the manifest
+schema version and remains independent from the plugin release version.
 
 The repository must allow GitHub Actions to write contents, and branch rules for
 `main` must permit the release workflow's version commit.

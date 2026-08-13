@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PYPROJECT_PATH = ROOT / "pyproject.toml"
 MANIFEST_PATH = ROOT / "manifest.yaml"
 SEMVER_PATTERN = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
+SUPPORTED_MANIFEST_VERSIONS = {"0.0.1", "0.0.2"}
 
 
 def parse_version(value: str) -> tuple[int, int, int]:
@@ -21,7 +22,7 @@ def parse_version(value: str) -> tuple[int, int, int]:
     return tuple(int(part) for part in match.groups())
 
 
-def read_versions() -> dict[str, str]:
+def read_versions() -> tuple[dict[str, str], str]:
     with PYPROJECT_PATH.open("rb") as file:
         project_version = tomllib.load(file)["project"]["version"]
 
@@ -34,17 +35,21 @@ def read_versions() -> dict[str, str]:
     if top_level_match is None or meta_match is None:
         raise ValueError("manifest.yaml must contain top-level and meta versions")
 
-    return {
-        "pyproject.toml": project_version,
-        "manifest.yaml": top_level_match.group(1),
-        "manifest.yaml meta": meta_match.group(1),
-    }
+    return (
+        {
+            "pyproject.toml": project_version,
+            "manifest.yaml": top_level_match.group(1),
+        },
+        meta_match.group(1),
+    )
 
 
 def check_versions() -> str:
-    versions = read_versions()
+    versions, manifest_version = read_versions()
     for value in versions.values():
         parse_version(value)
+    if manifest_version not in SUPPORTED_MANIFEST_VERSIONS:
+        raise ValueError(f"unsupported manifest schema version {manifest_version!r}")
     if len(set(versions.values())) != 1:
         details = ", ".join(f"{source}={version}" for source, version in versions.items())
         raise ValueError(f"version mismatch: {details}")
@@ -74,14 +79,8 @@ def set_version(version: str) -> None:
         manifest,
         count=1,
     )
-    manifest, meta_replacements = re.subn(
-        r"(?m)(^meta:\s*$\n(?:(?:^[ \t]+.*\n)*?)?^[ \t]+version:)\s*[^\s#]+\s*$",
-        rf"\g<1> {version}",
-        manifest,
-        count=1,
-    )
-    if top_level_replacements != 1 or meta_replacements != 1:
-        raise ValueError("could not update both versions in manifest.yaml")
+    if top_level_replacements != 1:
+        raise ValueError("could not update version in manifest.yaml")
 
     PYPROJECT_PATH.write_text(pyproject, encoding="utf-8")
     MANIFEST_PATH.write_text(manifest, encoding="utf-8")

@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+env:
+  DIFY_CLI_VERSION: 0.6.10
+  DIFY_CLI_SHA256: 0cef74bcae375a4337c2ff7d42e4787717981a795e1c23cf56bb27ec07ec8304
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -37,12 +41,11 @@ jobs:
         run: python -m pytest -q
 
       - name: Install Dify Plugin CLI
-        env:
-          DIFY_CLI_VERSION: 0.2.0
         run: |
           curl --fail --location --silent --show-error \
             --output "$RUNNER_TEMP/dify" \
             "https://github.com/langgenius/dify-plugin-daemon/releases/download/${DIFY_CLI_VERSION}/dify-plugin-linux-amd64"
+          echo "${DIFY_CLI_SHA256}  $RUNNER_TEMP/dify" | sha256sum --check
           chmod +x "$RUNNER_TEMP/dify"
           echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
 
