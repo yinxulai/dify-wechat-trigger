@@ -7,7 +7,6 @@ from typing import Any
 
 from werkzeug import Request
 
-from .wechat_work_config import RobotConfig
 from .wechat_work_crypto import WechatWorkCrypto, WechatWorkCryptoError
 
 
@@ -25,8 +24,8 @@ class WechatWorkCallback:
     _MAX_BODY_BYTES = 1024 * 1024
     _MAX_ENCRYPTED_BYTES = 2 * 1024 * 1024
 
-    def __init__(self, robot: RobotConfig, clock: Callable[[], float] = time.time) -> None:
-        self._crypto = WechatWorkCrypto(robot.token, robot.encoding_aes_key, robot.aibotid)
+    def __init__(self, token: str, encoding_aes_key: str, clock: Callable[[], float] = time.time) -> None:
+        self._crypto = WechatWorkCrypto(token, encoding_aes_key, "")
         self._clock = clock
 
     def decrypt_request(self, request: Request) -> bytes:

@@ -16,19 +16,16 @@ from provider.wechat_work_crypto import WechatWorkCrypto
 
 
 AES_KEY = base64.b64encode(bytes(range(32))).decode("ascii").rstrip("=")
-ROBOT_PROPERTIES = {
-    "robot_id": "support",
-    "robot_name": "Support",
-    "aibotid": "bot-1",
+CALLBACK_PROPERTIES = {
     "token": "callback-token",
     "encoding_aes_key": AES_KEY,
 }
 
 
-def _subscription(properties=ROBOT_PROPERTIES) -> Subscription:
+def _subscription(properties=CALLBACK_PROPERTIES) -> Subscription:
     return Subscription(
         endpoint="https://example.test/callback",
-        parameters={"robot_id": "support"},
+        parameters={},
         properties=properties,
     )
 
@@ -53,7 +50,7 @@ def _request(
     decrypted: bytes | None = None,
 ) -> Request:
     timestamp = timestamp or str(int(time.time()))
-    crypto = WechatWorkCrypto("callback-token", AES_KEY, "bot-1")
+    crypto = WechatWorkCrypto("callback-token", AES_KEY, "")
     message = decrypted or json.dumps(
         payload or {"aibotid": "bot-1", "msgid": "message-1", "msgtype": "text"}
     ).encode("utf-8")
@@ -97,7 +94,7 @@ def test_rejects_unsupported_callback_method() -> None:
 
 
 def test_rejects_invalid_subscription_properties() -> None:
-    with pytest.raises(TriggerDispatchError, match="Subscription robot configuration is invalid"):
+    with pytest.raises(TriggerDispatchError, match="Token and EncodingAESKey are required"):
         _trigger()._dispatch_event(_subscription(properties={}), _request())
 
 

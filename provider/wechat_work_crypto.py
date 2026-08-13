@@ -18,8 +18,6 @@ class WechatWorkCrypto:
     def __init__(self, token: str, encoding_aes_key: str, receive_id: str) -> None:
         if not token:
             raise ValueError("token must not be empty")
-        if not receive_id:
-            raise ValueError("receive_id must not be empty")
         self.token = token
         self.key = decode_aes_key(encoding_aes_key)
         self.receive_id = receive_id
@@ -50,7 +48,7 @@ class WechatWorkCrypto:
 
         receive_id = plaintext[message_end:].decode("utf-8")
         if receive_id != self.receive_id:
-            raise WechatWorkCryptoError("callback receive id does not match the selected robot")
+            raise WechatWorkCryptoError("callback receive id does not match the configured value")
         return plaintext[20:message_end]
 
     def encrypt(self, message: bytes) -> str:
