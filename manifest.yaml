@@ -15,7 +15,7 @@ resource:
   permission: {}
 plugins:
   triggers:
-    - provider/wechat_work.yaml
+    - provider/wechat_work_trigger.yaml
 meta:
   version: 0.0.2
   minimum_dify_version: 1.10.0
