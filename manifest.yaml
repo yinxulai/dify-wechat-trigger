@@ -1,0 +1,28 @@
+version: 0.1.0
+type: plugin
+name: wechat_work_trigger
+author: dify-community
+label:
+  en_US: WeCom AI Bot Trigger
+  zh_Hans: 企业微信智能机器人触发器
+description:
+  en_US: Trigger Dify workflows from encrypted WeCom AI bot callbacks.
+  zh_Hans: 通过企业微信智能机器人加密回调触发 Dify 工作流。
+icon: icon.svg
+created_at: "2026-08-13T00:00:00.000000000Z"
+resource:
+  memory: 1048576
+  permission: {}
+plugins:
+  triggers:
+    - provider/wechat_work.yaml
+meta:
+  version: 0.1.0
+  minimum_dify_version: 1.10.0
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main

@@ -1,0 +1,64 @@
+identity:
+  author: dify-community
+  name: wechat_work
+  label:
+    en_US: WeCom AI Bot
+    zh_Hans: 企业微信智能机器人
+  description:
+    en_US: Receive encrypted WeCom AI bot callbacks.
+    zh_Hans: 接收企业微信智能机器人的加密回调。
+  icon: icon.svg
+
+subscription_constructor:
+  credentials_schema:
+    - name: robot_id
+      type: text-input
+      required: true
+      multiple: true
+      label:
+        en_US: Robot IDs
+        zh_Hans: 机器人 ID
+      help:
+        en_US: Add one value for each robot. Keep the order the same across all robot fields.
+        zh_Hans: 每个机器人添加一项，所有机器人字段必须保持相同顺序。
+    - name: robot_name
+      type: text-input
+      required: true
+      multiple: true
+      label:
+        en_US: Robot Names
+        zh_Hans: 机器人名称
+    - name: aibotid
+      type: text-input
+      required: true
+      multiple: true
+      label:
+        en_US: AI Bot IDs
+        zh_Hans: 智能机器人 ID
+    - name: token
+      type: secret-input
+      required: true
+      multiple: true
+      label:
+        en_US: Callback Tokens
+        zh_Hans: 回调 Token
+    - name: encoding_aes_key
+      type: secret-input
+      required: true
+      multiple: true
+      label:
+        en_US: Encoding AES Keys
+        zh_Hans: EncodingAESKey
+  parameters:
+    - name: robot_id
+      type: dynamic-select
+      required: true
+      label:
+        en_US: Robot
+        zh_Hans: 机器人
+events:
+  - events/message/message_received.yaml
+
+extra:
+  python:
+    source: provider/wechat_work.py
