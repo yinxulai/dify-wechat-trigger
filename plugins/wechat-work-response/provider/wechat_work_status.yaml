@@ -1,0 +1,5 @@
+path: /wechat-work/status
+method: POST
+extra:
+  python:
+    source: provider/wechat_work_response_endpoint.py

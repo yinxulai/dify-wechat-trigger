@@ -28,17 +28,24 @@ jobs:
           cache: pip
 
       - name: Install dependencies
-        run: python -m pip install -e '.[dev]'
+        run: python -m pip install -e 'plugins/wechat-work-trigger[dev]'
 
       - name: Check versions
         id: version
+        working-directory: plugins/wechat-work-trigger
         run: echo "version=$(python scripts/version.py check)" >> "$GITHUB_OUTPUT"
 
-      - name: Compile Python sources
+      - name: Compile trigger sources
+        working-directory: plugins/wechat-work-trigger
         run: python -m compileall -q provider events main.py
 
-      - name: Run tests
+      - name: Test trigger plugin
+        working-directory: plugins/wechat-work-trigger
         run: python -m pytest -q
+
+      - name: Compile response sources
+        working-directory: plugins/wechat-work-response
+        run: python -m compileall -q provider main.py
 
       - name: Install Dify Plugin CLI
         run: |
@@ -52,8 +59,10 @@ jobs:
       - name: Package plugin
         run: |
           mkdir -p dist
-          dify plugin package . \
+          dify plugin package plugins/wechat-work-trigger \
             -o "dist/wechat_work_trigger-v${{ steps.version.outputs.version }}.difypkg"
+          dify plugin package plugins/wechat-work-response \
+            -o "dist/wechat_work_response-v0.1.0.difypkg"
 
       - name: Upload package
         uses: actions/upload-artifact@v4

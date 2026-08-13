@@ -1,4 +1,31 @@
-# WeCom AI Bot Trigger
+# Dify WeCom Plugins
+
+This repository contains two independent Dify plugins for WeCom AI bots:
+
+- `plugins/wechat-work-trigger`: receives encrypted WeCom callbacks and starts
+  Dify workflows.
+- `plugins/wechat-work-response`: sends workflow results back to WeCom and
+  updates asynchronous task status.
+
+Dify requires trigger, tool, model, endpoint, and agent strategy providers to be
+packaged separately. Each directory under `plugins/` is therefore built and
+installed as its own `.difypkg`.
+
+## Development
+
+Run the trigger checks:
+
+```bash
+cd plugins/wechat-work-trigger
+source ../../.venv/bin/activate
+python scripts/version.py check
+python -m compileall -q provider events main.py
+python -m pytest -q
+dify plugin package . -o dist/wechat_work_trigger-v$(python scripts/version.py check).difypkg
+```
+
+The response plugin has its own credentials, state backend, and package
+version. Its workflow-facing HTTP contract is documented in its README.# WeCom AI Bot Trigger
 
 This Dify trigger receives encrypted URL callbacks (short-connection/Webhook)
 from WeCom AI bots and dispatches incoming messages to a workflow. It does not

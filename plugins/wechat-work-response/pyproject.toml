@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wechat_work_response"
+version = "0.1.3"
+description = "Dify response plugin for WeCom AI bots"
+authors = [{ name = "yinxulai", email = "me@yinxulai.com" }]
+requires-python = ">=3.12"
+dependencies = ["dify_plugin>=0.10.2,<1"]
+
+[tool.setuptools.packages.find]
+include = ["provider*"]

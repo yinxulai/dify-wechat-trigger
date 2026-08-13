@@ -6,4 +6,12 @@ __pycache__/
 dist/
 *.difypkg
 .env
+.DS_Store.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+dist/
+*.difypkg
+.env
 .DS_Store

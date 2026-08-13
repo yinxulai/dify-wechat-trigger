@@ -1,0 +1,5 @@
+path: /wechat-work/reply
+method: POST
+extra:
+  python:
+    source: provider/wechat_work_response_endpoint.py
