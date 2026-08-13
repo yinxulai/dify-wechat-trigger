@@ -41,13 +41,13 @@ class WechatWorkTrigger(Trigger):
             raise TriggerDispatchError("Decrypted callback payload must be valid JSON") from exc
         if not isinstance(payload, Mapping):
             raise TriggerDispatchError("Decrypted payload must be a JSON object")
-        if not payload.get("aibotid"):
-            raise TriggerDispatchError("Missing aibotid")
-        if not payload.get("msgid"):
-            raise TriggerDispatchError("Missing msgid")
 
         return EventDispatch(
             events=["message_received"],
-            response=Response('{"status":"ok"}', status=200, mimetype="application/json"),
+            response=Response(
+                callback.encrypt_response({}, request.args["nonce"]),
+                status=200,
+                mimetype="application/json",
+            ),
             payload=dict(payload),
         )

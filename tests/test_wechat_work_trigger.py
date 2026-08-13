@@ -79,6 +79,28 @@ def test_dispatches_verified_post_callback() -> None:
     assert result.events == ["message_received"]
     assert result.payload["msgid"] == "message-1"
     assert result.response.status_code == 200
+    encrypted_response = json.loads(result.response.get_data())
+    response_crypto = WechatWorkCrypto("callback-token", AES_KEY, "")
+    response_payload = response_crypto.decrypt(encrypted_response["encrypt"])
+    assert json.loads(response_payload) == {}
+
+
+def test_dispatches_event_without_message_fields() -> None:
+    result = _trigger()._dispatch_event(
+        _subscription(),
+        _request(payload={"event": {"feedback_event": {"id": "feedback-1"}}}),
+    )
+
+    assert result.events == ["message_received"]
+    assert result.payload["event"]["feedback_event"]["id"] == "feedback-1"
+
+
+def test_returns_decrypted_echostr_for_wecom_url_probe() -> None:
+    result = _trigger()._dispatch_event(_subscription(), _request(method="GET", decrypted=b"probe"))
+
+    assert result.events == []
+    assert result.response.status_code == 200
+    assert result.response.get_data() == b"probe"
 
 
 def test_rejects_expired_callback() -> None:

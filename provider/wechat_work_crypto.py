@@ -46,7 +46,10 @@ class WechatWorkCrypto:
         if message_end > len(plaintext):
             raise WechatWorkCryptoError("invalid callback message length")
 
-        receive_id = plaintext[message_end:].decode("utf-8")
+        try:
+            receive_id = plaintext[message_end:].decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise WechatWorkCryptoError("invalid callback receive id") from exc
         if receive_id != self.receive_id:
             raise WechatWorkCryptoError("callback receive id does not match the configured value")
         return plaintext[20:message_end]

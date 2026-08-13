@@ -51,6 +51,11 @@ class WechatWorkCallback:
         except WechatWorkCryptoError as exc:
             raise CallbackAuthenticationError("callback authentication failed") from exc
 
+    def encrypt_response(self, payload: Mapping[str, Any], nonce: str) -> str:
+        response = json.dumps(payload, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        encrypted = self._crypto.encrypt(response)
+        return json.dumps({"encrypt": encrypted}, ensure_ascii=False, separators=(",", ":"))
+
     def _validate_timestamp(self, timestamp: str) -> None:
         try:
             timestamp_value = int(timestamp)
