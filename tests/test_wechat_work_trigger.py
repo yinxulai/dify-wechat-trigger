@@ -13,6 +13,7 @@ from dify_plugin.entities.trigger import Subscription
 from dify_plugin.errors.trigger import TriggerDispatchError, TriggerValidationError
 from provider.wechat_work import WechatWorkTrigger
 from provider.wechat_work_crypto import WechatWorkCrypto
+from events.message.message_received import MessageReceivedEvent
 
 
 AES_KEY = base64.b64encode(bytes(range(32))).decode("ascii").rstrip("=")
@@ -93,6 +94,49 @@ def test_dispatches_event_without_message_fields() -> None:
 
     assert result.events == ["message_received"]
     assert result.payload["event"]["feedback_event"]["id"] == "feedback-1"
+
+
+def test_normalizes_message_output_for_workflow() -> None:
+    variables = MessageReceivedEvent(runtime=Mock())._on_event(
+        None,
+        {},
+        {
+            "aibotid": "bot-1",
+            "msgid": "message-1",
+            "msgtype": "text",
+            "text": {"content": "hello", "irrelevant_empty": ""},
+            "from": {"userid": "user-1", "alias": "Alice", "name": "Alice Name"},
+            "chattype": "group",
+            "chatid": "chat-1",
+        },
+    )
+
+    assert variables.variables == {
+        "message": {
+            "id": "message-1",
+            "type": "text",
+            "content": "hello",
+            "data": {"content": "hello"},
+        },
+        "sender": {"id": "user-1", "name": "Alice"},
+        "conversation": {"type": "group", "id": "chat-1"},
+        "bot_id": "bot-1",
+    }
+
+
+def test_normalizes_event_output_without_empty_fields() -> None:
+    variables = MessageReceivedEvent(runtime=Mock())._on_event(
+        None,
+        {},
+        {"event": {"eventtype": "feedback_event", "feedback_event": {"id": "feedback-1"}}},
+    )
+
+    assert variables.variables == {
+        "event": {
+            "type": "feedback_event",
+            "data": {"eventtype": "feedback_event", "feedback_event": {"id": "feedback-1"}},
+        }
+    }
 
 
 def test_returns_decrypted_echostr_for_wecom_url_probe() -> None:

@@ -23,8 +23,38 @@ arrives inside the decrypted JSON payload. Long-connection mode, which uses a
 BotID and Secret, is not supported.
 
 The callback validates the signature, decrypts the request, validates the
-message structure, and exposes the decrypted message as the `message_received`
-event payload.
+message structure, and exposes a normalized `message_received` event payload.
+
+The event output keeps only workflow-relevant data:
+
+```json
+{
+	"message": {
+		"id": "message-id",
+		"type": "text",
+		"content": "hello",
+		"data": {}
+	},
+	"sender": {
+		"id": "user-id",
+		"name": "Alice"
+	},
+	"conversation": {
+		"type": "single",
+		"id": "chat-id",
+		"name": "Team chat"
+	},
+	"bot_id": "aibot-id",
+	"event": {
+		"type": "feedback_event",
+		"data": {}
+	}
+}
+```
+
+Empty values are omitted. `message.data` contains message-type-specific fields,
+while `event.data` contains event-specific fields such as feedback or template
+card interactions.
 
 ## Development
 

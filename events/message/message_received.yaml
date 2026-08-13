@@ -9,7 +9,22 @@ description:
   zh_Hans: 企业微信智能机器人收到消息或事件时触发。
 output_schema:
   type: object
-  additionalProperties: true
+  properties:
+    message:
+      type: object
+      description: Message identity, type, text content, and type-specific data.
+    sender:
+      type: object
+      description: Sender identity.
+    conversation:
+      type: object
+      description: Chat type and conversation identity.
+    bot_id:
+      type: string
+      description: WeCom AI bot ID from the callback payload.
+    event:
+      type: object
+      description: Event type and event-specific data when the callback is an event.
 extra:
   python:
     source: events/message/message_received.py
