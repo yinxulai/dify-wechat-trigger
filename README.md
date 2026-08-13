@@ -6,17 +6,20 @@ support the WeCom long-connection mode.
 
 ## Configuration
 
-Create one trigger provider credential in the Dify UI. Add one value to each
-repeated robot field: `Robot IDs`, `Robot Names`, `AI Bot IDs`, `Callback
-Tokens`, and `Encoding AES Keys`. Values are paired by position, so the first
-value in every field describes the first robot, the second value describes the
-second robot, and so on.
+In the Dify UI, use the `Add WeCom AI Bot` configuration to add a bot that you
+have already created in WeCom. Add one value to each repeated robot field:
+`Robot IDs`, `Robot Names`, `AI Bot IDs`, `Callback Tokens`, and `Encoding AES
+Keys`. Values are paired by position, so the first value in every field
+describes the first robot, the second value describes the second robot, and so
+on. This configuration does not create a bot in WeCom.
 
-Create a subscription, select one robot, and copy the generated callback URL to
-that robot's HTTPS URL callback configuration in WeCom. Choose API mode with
-"Set message receiving URL" rather than long-connection mode. This first
-version uses manual callback configuration and does not create an outbound
-webhook.
+Create a trigger connection in Dify, select the WeCom AI bot you just added,
+and copy the generated callback URL to that bot's HTTPS URL callback
+configuration in WeCom. Dify may call this step a "subscription" internally;
+it means binding one bot to a Dify workflow, not subscribing to a WeCom feed.
+Choose API mode with "Set message receiving URL" rather than long-connection
+mode. This first version uses manual callback configuration and does not create
+an outbound webhook.
 
 The callback validates the signature, decrypts the request, checks `aibotid`,
 and exposes the decrypted message as the `message_received` event payload.

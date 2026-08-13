@@ -2,11 +2,11 @@ identity:
   author: yinxulai
   name: wechat_work_trigger
   label:
-    en_US: WeCom AI Bot
-    zh_Hans: 企业微信智能机器人
+    en_US: Add WeCom AI Bot
+    zh_Hans: 添加企业微信机器人
   description:
-    en_US: Receive encrypted WeCom AI bot callbacks through the URL callback (short-connection/Webhook) mode. Long-connection mode is not supported.
-    zh_Hans: 通过 URL 回调（短连接/Webhook）模式接收企业微信智能机器人的加密回调；暂不支持长连接模式。
+    en_US: Add an existing WeCom AI bot to Dify using URL callback credentials, then receive its encrypted callbacks. This does not create a bot in WeCom. Long-connection mode is not supported.
+    zh_Hans: 录入已有企业微信机器人的 URL 回调配置，让 Dify 接收加密消息；不会自动创建企业微信机器人，暂不支持长连接模式。
   icon: icon.svg
 
 subscription_schema:
@@ -17,8 +17,8 @@ subscription_schema:
       en_US: Robot ID
       zh_Hans: 机器人 ID
     help:
-      en_US: A local identifier used to select this robot when creating a subscription. It does not come from WeCom and can be any unique value.
-      zh_Hans: 用于在创建订阅时选择此机器人的本地标识，不是企业微信提供的 ID，可填写任意唯一值。
+      en_US: A local identifier for this existing WeCom bot in Dify, such as support. It is not issued by WeCom and can be any unique value.
+      zh_Hans: 在 Dify 中标识这个已有企业微信机器人的本地 ID，例如 support；不是企业微信提供的 ID，可自行填写唯一值。
   - name: robot_name
     type: text-input
     required: true
@@ -26,8 +26,8 @@ subscription_schema:
       en_US: Robot Name
       zh_Hans: 机器人名称
     help:
-      en_US: A local display name to help you recognize this robot in Dify. It is not sent to WeCom.
-      zh_Hans: 用于在 Dify 中识别机器人的本地显示名称，不会发送给企业微信。
+      en_US: The display name of this existing bot in Dify, such as Customer Service Bot. It is only used for recognition and is not sent to WeCom.
+      zh_Hans: 这个已有机器人在 Dify 中的显示名称，例如客服机器人；仅用于识别，不会发送给企业微信。
   - name: aibotid
     type: text-input
     required: true
@@ -35,8 +35,8 @@ subscription_schema:
       en_US: AI Bot ID
       zh_Hans: 智能机器人 ID
     help:
-      en_US: The BotID (aibotid) of the WeCom AI bot. Use the BotID from the API mode configured with "Set message receiving URL". Do not use a long-connection Secret here. See the WeCom documentation.
-      zh_Hans: 企业微信智能机器人的 BotID（aibotid）。请使用 API 模式中“设置接收消息 URL”配置对应的 BotID，不要填写长连接模式的 Secret。详见企业微信文档。
+      en_US: The BotID of the bot you already created in WeCom. Use it with API mode > Set message receiving URL. Do not use a long-connection Secret here.
+      zh_Hans: 你已在企业微信创建的机器人的 BotID。请配合“API 模式 > 设置接收消息 URL”使用，不要填写长连接模式的 Secret。
     url: https://developer.work.weixin.qq.com/document/path/101463
   - name: token
     type: secret-input
@@ -45,8 +45,8 @@ subscription_schema:
       en_US: Callback Token
       zh_Hans: 回调 Token
     help:
-      en_US: The Token configured in the API mode "Set message receiving URL" configuration. It verifies URL callback signatures. This is not the Secret used by long-connection mode.
-      zh_Hans: API 模式“设置接收消息 URL”中配置的 Token，用于校验 URL 回调签名；不是长连接模式使用的 Secret。
+      en_US: The Token configured for this bot in WeCom under API mode > Set message receiving URL. Copy the same value here to verify callbacks.
+      zh_Hans: 企业微信中这个机器人“API 模式 > 设置接收消息 URL”里的 Token；请将相同的值填入这里，用于校验回调。
     url: https://developer.work.weixin.qq.com/document/path/101463
   - name: encoding_aes_key
     type: secret-input
@@ -55,8 +55,8 @@ subscription_schema:
       en_US: Encoding AES Key
       zh_Hans: EncodingAESKey
     help:
-      en_US: The 43-character EncodingAESKey configured in the API mode "Set message receiving URL" configuration. It decrypts URL callback payloads. Long-connection mode does not use this field.
-      zh_Hans: API 模式“设置接收消息 URL”中配置的 43 位 EncodingAESKey，用于解密 URL 回调内容；长连接模式不使用此字段。
+      en_US: The 43-character EncodingAESKey configured for this bot in WeCom under API mode > Set message receiving URL. Copy the same value here to decrypt callbacks.
+      zh_Hans: 企业微信中这个机器人“API 模式 > 设置接收消息 URL”里的 43 位 EncodingAESKey；请将相同的值填入这里，用于解密回调。
     url: https://developer.work.weixin.qq.com/document/path/101463
 
 subscription_constructor:
@@ -119,8 +119,8 @@ subscription_constructor:
       type: dynamic-select
       required: true
       label:
-        en_US: Robot
-        zh_Hans: 机器人
+        en_US: WeCom AI Bot
+        zh_Hans: 企业微信智能机器人
 events:
   - events/message/message_received.yaml
 
