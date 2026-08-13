@@ -1,7 +1,7 @@
 version: 0.1.0
 type: plugin
 name: wechat_work_trigger
-author: dify-community
+author: yinxulai
 label:
   en_US: WeCom AI Bot Trigger
   zh_Hans: 企业微信智能机器人触发器
