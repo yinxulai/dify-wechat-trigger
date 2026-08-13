@@ -1,10 +1,10 @@
-version: 0.1.2
+version: 0.1.3
 type: plugin
 name: wechat_work_trigger
 author: yinxulai
 label:
-  en_US: WeCom AI Bot Trigger (URL Callback)
-  zh_Hans: 企业微信智能机器人触发器（URL 回调）
+  en_US: WeCom AI Bot Trigger
+  zh_Hans: 企业微信智能机器人触发器
 description:
   en_US: Trigger Dify workflows from encrypted WeCom AI bot URL callbacks. Long-connection mode is not supported.
   zh_Hans: 通过企业微信智能机器人的加密 URL 回调触发 Dify 工作流；暂不支持长连接模式。

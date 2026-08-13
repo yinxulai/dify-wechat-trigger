@@ -83,7 +83,11 @@ def test_dispatches_verified_post_callback() -> None:
     encrypted_response = json.loads(result.response.get_data())
     response_crypto = WechatWorkCrypto("callback-token", AES_KEY, "")
     response_payload = response_crypto.decrypt(encrypted_response["encrypt"])
-    assert json.loads(response_payload) == {}
+    response_json = json.loads(response_payload)
+    assert response_json["msgtype"] == "stream"
+    assert response_json["stream"]["finish"] is False
+    assert response_json["stream"]["content"] == ""
+    assert response_json["stream"]["id"].startswith("dify-")
 
 
 def test_dispatches_event_without_message_fields() -> None:

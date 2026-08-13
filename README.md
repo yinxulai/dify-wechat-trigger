@@ -56,6 +56,13 @@ Empty values are omitted. `message.data` contains message-type-specific fields,
 while `event.data` contains event-specific fields such as feedback or template
 card interactions.
 
+## Reply Capability
+
+Dify requires trigger providers and tool providers to be packaged separately;
+they cannot be declared together in one plugin manifest. This package therefore
+contains the WeCom trigger only. A WeCom reply tool must be published as a
+separate tool plugin and connected to the workflow independently.
+
 ## Development
 
 Run the local checks with Python 3.12:
