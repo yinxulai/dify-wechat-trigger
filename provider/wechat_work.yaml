@@ -9,6 +9,38 @@ identity:
     zh_Hans: 接收企业微信智能机器人的加密回调。
   icon: icon.svg
 
+subscription_schema:
+  - name: robot_id
+    type: text-input
+    required: true
+    label:
+      en_US: Robot ID
+      zh_Hans: 机器人 ID
+  - name: robot_name
+    type: text-input
+    required: true
+    label:
+      en_US: Robot Name
+      zh_Hans: 机器人名称
+  - name: aibotid
+    type: text-input
+    required: true
+    label:
+      en_US: AI Bot ID
+      zh_Hans: 智能机器人 ID
+  - name: token
+    type: secret-input
+    required: true
+    label:
+      en_US: Callback Token
+      zh_Hans: 回调 Token
+  - name: encoding_aes_key
+    type: secret-input
+    required: true
+    label:
+      en_US: Encoding AES Key
+      zh_Hans: EncodingAESKey
+
 subscription_constructor:
   credentials_schema:
     - name: robot_id

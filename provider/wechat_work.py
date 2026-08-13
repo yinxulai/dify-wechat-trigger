@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import json
-import time
 from collections.abc import Mapping
 from typing import Any
 
@@ -10,37 +9,45 @@ from werkzeug import Request, Response
 from dify_plugin.entities import I18nObject, ParameterOption
 from dify_plugin.entities.provider_config import CredentialType
 from dify_plugin.entities.trigger import EventDispatch, Subscription, UnsubscribeResult
-from dify_plugin.errors.trigger import SubscriptionError, TriggerDispatchError, TriggerValidationError
+from dify_plugin.errors.trigger import (
+    SubscriptionError,
+    TriggerDispatchError,
+    TriggerProviderCredentialValidationError,
+    TriggerValidationError,
+)
 from dify_plugin.interfaces.trigger import Trigger, TriggerSubscriptionConstructor
 
-from .wechat_work_crypto import WechatWorkCrypto, WechatWorkCryptoError, find_robot, parse_robot_configs
+from .wechat_work_callback import (
+    CallbackAuthenticationError,
+    CallbackPayloadError,
+    WechatWorkCallback,
+)
+from .wechat_work_config import RobotConfigurationError, find_robot, parse_robot_configs
 
 
 class WechatWorkTrigger(Trigger):
     def _dispatch_event(self, subscription: Subscription, request: Request) -> EventDispatch:
         robot_id = subscription.parameters.get("robot_id") if subscription.parameters else None
-        robot = find_robot(parse_robot_configs(subscription.properties), str(robot_id))
-        crypto = WechatWorkCrypto(robot.token, robot.encoding_aes_key, robot.aibotid)
-
-        timestamp = request.args.get("timestamp", "")
-        nonce = request.args.get("nonce", "")
-        encrypted = request.args.get("echostr") if request.method == "GET" else None
-        if request.method == "GET":
-            if not encrypted:
-                raise TriggerValidationError("Missing echostr")
-            crypto.verify_signature(request.args.get("msg_signature", ""), timestamp, nonce, encrypted)
-            return EventDispatch(events=[], response=Response(crypto.decrypt(encrypted), status=200))
-
-        raw_body = request.get_data()
         try:
-            envelope = json.loads(raw_body or b"{}")
-            encrypted = envelope.get("encrypt")
-            if not isinstance(encrypted, str):
-                raise TriggerDispatchError("Missing encrypt field")
-            crypto.verify_signature(request.args.get("msg_signature", ""), timestamp, nonce, encrypted)
-            payload = json.loads(crypto.decrypt(encrypted))
-        except (WechatWorkCryptoError, json.JSONDecodeError) as exc:
+            robot = find_robot(parse_robot_configs(subscription.properties), str(robot_id))
+        except RobotConfigurationError as exc:
+            raise TriggerDispatchError("Subscription robot configuration is invalid") from exc
+
+        callback = WechatWorkCallback(robot)
+        try:
+            decrypted = callback.decrypt_request(request)
+        except CallbackAuthenticationError as exc:
+            raise TriggerValidationError(str(exc)) from exc
+        except CallbackPayloadError as exc:
             raise TriggerDispatchError(str(exc)) from exc
+
+        if request.method == "GET":
+            return EventDispatch(events=[], response=Response(decrypted, status=200))
+
+        try:
+            payload = json.loads(decrypted)
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+            raise TriggerDispatchError("Decrypted callback payload must be valid JSON") from exc
         if not isinstance(payload, Mapping):
             raise TriggerDispatchError("Decrypted payload must be a JSON object")
         if payload.get("aibotid") != robot.aibotid:
@@ -64,22 +71,19 @@ class WechatWorkSubscriptionConstructor(TriggerSubscriptionConstructor):
         credential_type: CredentialType,
     ) -> Subscription:
         del credential_type
-        robots = parse_robot_configs(credentials)
         robot_id = parameters.get("robot_id")
         if not isinstance(robot_id, str) or not robot_id:
             raise SubscriptionError("robot_id is required", error_code="missing_robot_id")
-        robot = find_robot(robots, robot_id)
+        try:
+            robots = parse_robot_configs(credentials)
+            robot = find_robot(robots, robot_id)
+        except RobotConfigurationError as exc:
+            raise SubscriptionError(str(exc), error_code="invalid_robot_configuration") from exc
         return Subscription(
             expires_at=-1,
             endpoint=endpoint,
             parameters={"robot_id": robot_id},
-            properties={
-                "robot_id": robot.id,
-                "robot_name": robot.name,
-                "aibotid": robot.aibotid,
-                "token": robot.token,
-                "encoding_aes_key": robot.encoding_aes_key,
-            },
+            properties=robot.to_subscription_properties(),
         )
 
     def _delete_subscription(self, subscription: Subscription, credentials: Mapping[str, Any], credential_type: CredentialType) -> UnsubscribeResult:
@@ -100,4 +104,7 @@ class WechatWorkSubscriptionConstructor(TriggerSubscriptionConstructor):
         ]
 
     def _validate_api_key(self, credentials: Mapping[str, Any]) -> None:
-        parse_robot_configs(credentials)
+        try:
+            parse_robot_configs(credentials)
+        except RobotConfigurationError as exc:
+            raise TriggerProviderCredentialValidationError(str(exc)) from exc

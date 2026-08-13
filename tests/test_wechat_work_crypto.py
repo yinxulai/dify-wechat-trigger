@@ -2,12 +2,12 @@ import base64
 
 import pytest
 
-from provider.wechat_work_crypto import (
-    WechatWorkCrypto,
-    WechatWorkCryptoError,
+from provider.wechat_work_config import (
+    RobotConfigurationError,
     find_robot,
     parse_robot_configs,
 )
+from provider.wechat_work_crypto import WechatWorkCrypto, WechatWorkCryptoError
 
 
 AES_KEY = base64.b64encode(bytes(range(32))).decode("ascii").rstrip("=")
@@ -66,6 +66,13 @@ def test_parse_selected_robot_subscription_properties() -> None:
 
     assert len(robots) == 1
     assert robots[0].id == "support"
+    assert robots[0].to_subscription_properties() == {
+        "robot_id": "support",
+        "robot_name": "Support",
+        "aibotid": "bot-1",
+        "token": "token-1",
+        "encoding_aes_key": AES_KEY,
+    }
 
 
 def test_parse_visual_robot_configs_rejects_mismatched_fields() -> None:
@@ -87,5 +94,18 @@ def test_parse_robot_configs_rejects_duplicate_ids() -> None:
         {"id": "same", "name": "Two", "aibotid": "bot-2", "token": "token", "encoding_aes_key": AES_KEY},
     ]
 
-    with pytest.raises(ValueError, match="duplicate robot id"):
+    with pytest.raises(RobotConfigurationError, match="duplicate robot id"):
         parse_robot_configs(value)
+
+
+def test_parse_robot_configs_rejects_invalid_aes_key_with_domain_error() -> None:
+    with pytest.raises(RobotConfigurationError, match="encoding_aes_key"):
+        parse_robot_configs(
+            {
+                "robot_id": "support",
+                "robot_name": "Support",
+                "aibotid": "bot-1",
+                "token": "token-1",
+                "encoding_aes_key": "invalid",
+            }
+        )
